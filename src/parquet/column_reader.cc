@@ -404,7 +404,12 @@ bool TypedColumnReader<DType>::ReadNewPage() {
       current_decoder_->SetData(static_cast<int>(num_buffered_values_), buffer,
                                 static_cast<int>(data_size));
       return true;
-    } else {
+    }
+    else if (current_page_->type() == PageType::DATA_PAGE_V2) {
+     // Datapage_v2 format not handled here
+     throw ParquetException("Unsupported datapage format");
+    }
+    else {
       // We don't know what this page type is. We're allowed to skip non-data
       // pages.
       continue;
